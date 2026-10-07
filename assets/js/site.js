@@ -1,0 +1,130 @@
+/* Žilina Bears – spoločné skripty: menu, noviny, článok */
+(function () {
+  "use strict";
+
+  // ---------- mobilné menu
+  const burger = document.querySelector(".burger");
+  const menu = document.getElementById("menu");
+  if (burger && menu) {
+    const set = (open) => {
+      menu.classList.toggle("open", open);
+      burger.setAttribute("aria-expanded", String(open));
+      burger.setAttribute("aria-label", open ? "Zavrieť menu" : "Otvoriť menu");
+      burger.querySelector("svg").innerHTML = open
+        ? '<path d="M6 6l12 12M18 6 6 18"/>'
+        : '<path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/>';
+    };
+    burger.addEventListener("click", () => set(!menu.classList.contains("open")));
+    menu.addEventListener("click", (e) => { if (e.target.closest("a")) set(false); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && menu.classList.contains("open")) { set(false); burger.focus(); }
+    });
+  }
+
+  // ---------- chýbajúce obrázky: bez ikonky rozbitého obrázka
+  document.addEventListener("error", (e) => {
+    const t = e.target;
+    if (t.tagName !== "IMG") return;
+    if (t.classList.contains("thumb")) { t.removeAttribute("src"); }
+    else if (t.classList.contains("cover")) { t.remove(); }
+  }, true);
+
+  // ---------- pomocné funkcie
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const SRC = { facebook: "Facebook", instagram: "Instagram", archiv: "Archív", web: "Článok" };
+  const fmtDate = (iso) => {
+    const d = new Date(iso);
+    return isNaN(d) ? "" : d.toLocaleDateString("sk-SK", { day: "numeric", month: "numeric", year: "numeric" });
+  };
+  const badge = (p) => `<span class="badge ${esc(p.source)}">${esc(SRC[p.source] || p.source)}</span>`;
+  const card = (p) => `
+    <a class="post" href="clanok.html?id=${encodeURIComponent(p.id)}">
+      ${p.thumb
+        ? `<img class="thumb" src="${esc(p.thumb)}" alt="" loading="lazy">`
+        : `<span class="thumb none" aria-hidden="true"><svg width="48" height="48" viewBox="0 0 44 44"><path d="M22 2 L40 9 V22 C40 32 32 39 22 42 C12 39 4 32 4 22 V9 Z" fill="none" stroke="currentColor" stroke-width="3"/></svg></span>`}
+      <span class="body">
+        <span class="meta">${badge(p)}<span class="d">${fmtDate(p.date)}</span></span>
+        <h3>${esc(p.title)}</h3>
+        ${p.excerpt ? `<p>${esc(p.excerpt)}</p>` : ""}
+      </span>
+    </a>`;
+
+  async function loadIndex() {
+    const r = await fetch("data/posts.json", { cache: "no-cache" });
+    if (!r.ok) throw new Error("posts.json");
+    const list = await r.json();
+    return list.sort((a, b) => (a.date < b.date ? 1 : -1));
+  }
+  const fail = (el) => { el.innerHTML = '<div class="empty">Novinky sa nepodarilo načítať. Pozri náš <a href="https://www.facebook.com/Zilina.Bears/">Facebook</a>.</div>'; };
+
+  // ---------- úvodná stránka: 3 najnovšie
+  const home = document.getElementById("home-news");
+  if (home) loadIndex().then((l) => { home.innerHTML = l.slice(0, 3).map(card).join(""); }).catch(() => fail(home));
+
+  // ---------- stránka Noviny
+  const list = document.getElementById("news-list");
+  if (list) {
+    const chipsEl = document.getElementById("chips");
+    let all = [], filter = "all";
+    const FILTERS = [["all", "Všetko"], ["facebook", "Facebook"], ["instagram", "Instagram"], ["archiv", "Archív"]];
+    const render = () => {
+      chipsEl.innerHTML = FILTERS.map(([id, l]) => {
+        const n = id === "all" ? all.length : all.filter((p) => p.source === id).length;
+        return n || id === "all" ? `<button type="button" class="chip" data-f="${id}" aria-pressed="${filter === id}">${l} <span style="opacity:.7">(${n})</span></button>` : "";
+      }).join("");
+      chipsEl.querySelectorAll(".chip").forEach((b) => b.addEventListener("click", () => { filter = b.dataset.f; render(); }));
+      const shown = filter === "all" ? all : all.filter((p) => p.source === filter);
+      if (!shown.length) { list.innerHTML = '<div class="empty">Zatiaľ tu nič nie je.</div>'; return; }
+      const years = {};
+      shown.forEach((p) => (years[p.date.slice(0, 4)] ||= []).push(p));
+      list.innerHTML = Object.keys(years).sort().reverse()
+        .map((y) => `<h2 class="year">${y}</h2><div class="grid news">${years[y].map(card).join("")}</div>`).join("");
+    };
+    loadIndex().then((l) => { all = l; render(); }).catch(() => fail(list));
+  }
+
+  // ---------- detail článku
+  const art = document.getElementById("article");
+  if (art) {
+    const id = new URLSearchParams(location.search).get("id");
+    const linkify = (t) => esc(t).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" rel="noopener">$1</a>');
+    const paras = (t) => String(t || "").split(/\n{2,}/).map((p) => `<p>${linkify(p.trim())}</p>`).join("");
+    fetch(`data/posts/${encodeURIComponent(id || "")}.json`, { cache: "no-cache" })
+      .then((r) => { if (!r.ok) throw 0; return r.json(); })
+      .then((p) => {
+        document.title = `${p.title} – Žilina Bears`;
+        const imgs = p.images || [];
+        const gallery = imgs.length > 1
+          ? `<div class="gal">${imgs.map((src) => `<a href="${esc(src)}"><img src="${esc(src)}" alt="" loading="lazy"></a>`).join("")}</div>` : "";
+        const cover = imgs.length === 1 ? `<img class="cover" src="${esc(imgs[0])}" alt="">` : (p.html && p.thumb ? `<img class="cover" src="${esc(p.thumb)}" alt="">` : "");
+        const links = [p.link ? { source: p.source, link: p.link } : null, ...(p.also_on || [])].filter(Boolean)
+          .filter((x) => x.source !== "archiv")
+          .map((x) => `<a class="btn btn-d" href="${esc(x.link)}" rel="noopener">Pozri na ${esc(SRC[x.source] || x.source)} →</a>`).join(" ");
+        art.innerHTML = `
+          <a class="back" href="noviny.html">← Späť na noviny</a>
+          <div class="meta">${badge(p)}${(p.also_on || []).map(badge).join("")}<span class="d">${fmtDate(p.date)}</span></div>
+          <h1>${esc(p.title)}</h1>
+          ${p.excerpt && p.html ? `<p class="lead">${esc(p.excerpt)}</p>` : ""}
+          ${cover}
+          <div class="content ${p.html ? "" : "text"}">${p.html || paras(p.text)}</div>
+          ${gallery}
+          <div style="display:flex;flex-wrap:wrap;gap:12px;padding-top:16px;border-top:2px solid var(--line)">
+            ${links}<a class="btn btn-y" href="https://wa.me/421911913244">Chcem sa pridať</a>
+          </div>`;
+        // lightbox
+        const lb = document.querySelector(".lb");
+        art.querySelectorAll(".gal img, .content img").forEach((img) => {
+          img.style.cursor = "zoom-in";
+          img.addEventListener("click", (e) => {
+            e.preventDefault(); lb.querySelector("img").src = img.currentSrc || img.src;
+            lb.classList.add("open"); lb.querySelector("button").focus();
+          });
+        });
+      })
+      .catch(() => { art.innerHTML = '<a class="back" href="noviny.html">← Späť na noviny</a><div class="empty">Tento článok sme nenašli.</div>'; });
+    const lb = document.querySelector(".lb");
+    const close = () => lb.classList.remove("open");
+    lb.addEventListener("click", (e) => { if (e.target === lb || e.target.tagName === "BUTTON") close(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+  }
+})();
