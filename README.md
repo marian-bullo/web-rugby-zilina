@@ -22,9 +22,10 @@ sa upravuje priamo v HTML.
 
 ## Bežné úpravy
 
-**Zmena času alebo miesta tréningu:** na GitHube otvor `index.html`, klikni na ceruzku,
-nájdi (Ctrl+F) „Kedy a kde trénujeme“, prepíš text a klikni na *Commit changes*.
-Rovnaké údaje sú aj v sekcii *In English* na konci súboru. Web sa aktualizuje do 2 minút.
+**Zmena času alebo miesta tréningu:** na GitHube otvor `data/treningy.json`, klikni na ceruzku,
+prepíš text v úvodzovkách a klikni na *Commit changes*. Rozvrh sa zmení naraz v úvode, v sekcii
+Tréningy aj v anglickej časti. Do poľa `"oznam"` môžeš napísať krátku správu (napr. že tréning odpadá),
+zobrazí sa žltým v úvode; keď ju vymažeš na `""`, zmizne. Web sa aktualizuje do 2 minút.
 
 **Skrytie príspevku:** ID príspevku je v adrese článku (`clanok.html?id=fb-123_456`).
 Pridaj ho do `data/hidden.json`, napr. `["fb-123_456"]`. Pri ďalšom behu zmizne.

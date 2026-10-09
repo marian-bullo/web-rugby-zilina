@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Žilina Bears – ragby v Žiline a Bytči</title>
-<meta name="description" content="Ragbyový klub Žilina Bears: tréningy pre deti od 5 rokov, juniorov, ženy aj mužov v Žiline a Bytči. Prvý tréning zdarma.">
+<meta name="description" content="Ragbyový klub Žilina Bears: tréningy pre deti od 5 rokov, juniorov, ženy aj mužov v Žiline a Bytči. Príď si to vyskúšať.">
 <meta property="og:title" content="Žilina Bears – ragby v Žiline a Bytči">
-<meta property="og:description" content="Ragbyový klub Žilina Bears: tréningy pre deti od 5 rokov, juniorov, ženy aj mužov v Žiline a Bytči. Prvý tréning zdarma.">
+<meta property="og:description" content="Ragbyový klub Žilina Bears: tréningy pre deti od 5 rokov, juniorov, ženy aj mužov v Žiline a Bytči. Príď si to vyskúšať.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0E2A1C">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
@@ -29,7 +29,7 @@
 <a class="n" href="noviny.html">Noviny</a>
 <a class="n" href="index.html#kontakt">Kontakt</a>
 <a class="n" href="index.html#en" lang="en" style="color:#F5C400">EN</a>
-<a class="cta" href="https://wa.me/421911913244">Prvý tréning zdarma</a>
+<a class="cta" href="https://wa.me/421911913244">Pridaj sa</a>
 </nav>
 </div>
 </header>
@@ -39,7 +39,12 @@
 <div>
 <div class="kicker">Ragbyový klub Žilina · Bytča · 15 rokov</div>
 <h1 class="disp">Ragby pre každého.<br>Od 5 rokov.</h1>
-<p>Deti, juniori, ženy aj muži. Skúsenosti netreba a je jedno, či si fit – stačí chuť na sebe makať. Prvý tréning je zdarma.</p>
+<p>Deti, juniori, ženy aj muži. Skúsenosti netreba a je jedno, či si fit – stačí chuť na sebe makať. Príď si to vyskúšať.</p>
+<div id="oznam" class="oznam" role="status" hidden></div>
+<div class="hero-sched" aria-label="Tréningy">
+<div class="hs-head"><span>Tréningy</span><a href="#treningy">Detail →</a></div>
+<ul id="hero-sched"><li><span class="hs-g">Bytča</span><span class="hs-t">Pondelok <b>17:00</b></span><span class="hs-p">Ihrisko Hliník nad Váhom</span></li><li><span class="hs-g">Žilina · Deti</span><span class="hs-t">Streda <b>16:00</b></span><span class="hs-p">Bôrický park</span></li><li><span class="hs-g">Žilina · Dorast a dospelí</span><span class="hs-t">Streda <b>17:30</b></span><span class="hs-p">Bôrický park</span></li></ul>
+</div>
 <div style="display:flex;flex-wrap:wrap;gap:14px;padding-top:8px">
 <a class="btn btn-y" href="#treningy">Kedy trénujeme</a>
 <a class="btn btn-o" href="https://wa.me/421911913244">Napíš na WhatsApp</a>
@@ -52,7 +57,7 @@
 
 <section class="strip" aria-label="Prečo prísť">
 <div class="wrap grid">
-<div><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0E2A1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><strong>1. tréning zdarma</strong><span>Príď si to vyskúšať bez záväzkov.</span></div></div>
+<div><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0E2A1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><strong>Príď si to skúsiť</strong><span>Pozri sa na tréning, zahraj si a rozhodni sa potom.</span></div></div>
 <div><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0E2A1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><div><strong>Bez skúseností</strong><span>Začiatočníci sú vítaní, individuálny prístup.</span></div></div>
 <div><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0E2A1C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg><div><strong>Turnaje doma aj vonku</strong><span>Slovensko, Česko, Poľsko aj Maďarsko.</span></div></div>
 </div>
@@ -60,7 +65,7 @@
 
 <section id="treningy" class="wrap sec">
 <div class="sec-head"><div><div class="kicker">Rozvrh</div><h2 class="disp h2">Kedy a kde trénujeme</h2></div></div>
-<div class="grid train">
+<div class="grid train" id="train-grid">
 <article class="card"><div class="kicker" style="letter-spacing:1px">Bytča</div><h3>Pondelok 17:00</h3><div class="row"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E5B3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Ihrisko Hliník nad Váhom</span></div></article>
 <article class="card"><div class="kicker" style="letter-spacing:1px">Žilina · Deti</div><h3>Streda 16:00</h3><div class="row"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E5B3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Bôrický park</span></div></article>
 <article class="card"><div class="kicker" style="letter-spacing:1px">Žilina · Dorast a dospelí</div><h3>Streda 17:30</h3><div class="row"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E5B3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Bôrický park</span></div><a class="more" href="https://maps.app.goo.gl/PjMVvW672uVLpJYTA">Otvoriť v mape →</a></article>
@@ -76,8 +81,8 @@
 <div class="sec-head"><div><div class="kicker">Prvý tréning</div><h2 class="disp h2">Začni v troch krokoch</h2></div></div>
 <ol class="grid steps">
 <li><span class="num">01</span><h3>Ozvi sa nám</h3><p>Napíš na WhatsApp +421 911 913 244 a dohodneme sa, na ktorý tréning prídeš.</p></li>
-<li><span class="num">02</span><h3>Zbaľ si veci</h3><p>Bežecké topánky alebo kopačky, kraťasy a tričko. Nič iné netreba.</p></li>
-<li><span class="num">03</span><h3>Príď a hraj</h3><p>Prvý tréning je zdarma. Tréner ťa prevedie základmi, tím ťa podrží.</p></li>
+<li><span class="num">02</span><h3>Zbaľ si veci</h3><p>Bežecké topánky alebo kopačky, kraťasy, tričko a fľašu s vodou. Pitný režim si nosí každý sám, cisternu nevozíme.</p></li>
+<li><span class="num">03</span><h3>Príď a hraj</h3><p>Tréner ťa prevedie základmi, tím ťa podrží.</p></li>
 </ol>
 </div>
 </section>
@@ -134,8 +139,8 @@
 <div class="wrap" style="padding-top:72px;padding-bottom:72px;display:flex;flex-wrap:wrap;gap:32px">
 <h2 class="disp" style="flex:1 1 300px;font-size:44px">In English</h2>
 <div style="flex:2 1 520px;min-width:0;display:flex;flex-direction:column;gap:12px">
-<p style="margin:0">New players of any level are welcome – the first training is free and we speak English, German and French.</p>
-<p style="margin:0"><strong>Bytča:</strong> Mondays 17:00, Hliník nad Váhom pitch. <strong>Žilina children:</strong> Wednesdays 16:00, Bôrik park. <strong>Žilina teens and adults:</strong> Wednesdays 17:30, Bôrik park.</p>
+<p style="margin:0">New players of any level are welcome – come and give it a try, we speak English, German and French.</p>
+<p style="margin:0" id="en-sched"><strong>Bytča:</strong> Mondays 17:00, Hliník nad Váhom pitch. <strong>Žilina children:</strong> Wednesdays 16:00, Bôrik park. <strong>Žilina teens and adults:</strong> Wednesdays 17:30, Bôrik park.</p>
 <p style="margin:0">UNIZA students can take rugby as a physical-education subject in both semesters. Contact us on WhatsApp: +421 911 913 244.</p>
 </div>
 </div>

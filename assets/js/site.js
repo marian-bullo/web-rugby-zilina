@@ -57,6 +57,24 @@
   }
   const fail = (el) => { el.innerHTML = '<div class="empty">Novinky sa nepodarilo načítať. Pozri náš <a href="https://www.facebook.com/Zilina.Bears/">Facebook</a>.</div>'; };
 
+
+  // ---------- rozvrh tréningov z data/treningy.json
+  const hs = document.getElementById("hero-sched");
+  if (hs) {
+    const PIN = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E5B3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+    fetch("data/treningy.json", { cache: "no-cache" }).then((r) => r.json()).then((d) => {
+      const t = (d.treningy || []).filter((x) => x.den && x.cas);
+      if (!t.length) return;
+      hs.innerHTML = t.map((x) => `<li><span class="hs-g">${esc(x.skupina)}</span><span class="hs-t">${esc(x.den)} <b>${esc(x.cas)}</b></span><span class="hs-p">${esc(x.miesto)}</span></li>`).join("");
+      const grid = document.getElementById("train-grid");
+      if (grid) grid.innerHTML = t.map((x) => `<article class="card"><div class="kicker" style="letter-spacing:1px">${esc(x.skupina)}</div><h3>${esc(x.den)} ${esc(x.cas)}</h3><div class="row">${PIN}<span>${esc(x.miesto)}</span></div>${x.mapa ? `<a class="more" href="${esc(x.mapa)}">Otvoriť v mape →</a>` : ""}</article>`).join("");
+      const en = document.getElementById("en-sched");
+      if (en) en.innerHTML = t.map((x) => `<strong>${esc(x.en_skupina || x.skupina)}:</strong> ${esc(x.en_den || x.den)} ${esc(x.cas)}, ${esc(x.en_miesto || x.miesto)}.`).join(" ");
+      const oz = document.getElementById("oznam");
+      if (oz && d.oznam && d.oznam.trim()) { oz.textContent = d.oznam; oz.hidden = false; }
+    }).catch(() => { /* pri chybe ostane rozvrh zapísaný priamo v stránke */ });
+  }
+
   // ---------- úvodná stránka: 3 najnovšie
   const home = document.getElementById("home-news");
   if (home) loadIndex().then((l) => { home.innerHTML = l.slice(0, 3).map(card).join(""); }).catch(() => fail(home));

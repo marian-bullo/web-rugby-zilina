@@ -31,7 +31,7 @@ API = f"https://graph.facebook.com/{VER}"
 ALL = "--all" in sys.argv
 MAX_PAGES = 40 if ALL else 1
 MAX_IMAGES = 12
-MERGE_WINDOW_H = 3      # FB a IG príspevok s podobným textom do 3 hodín = jeden článok
+MERGE_WINDOW_H = 72     # FB a IG príspevok s podobným textom do 3 dní = jeden článok
 MERGE_RATIO = 0.85
 
 
@@ -133,7 +133,8 @@ def merge(fb, ig):
             if abs(ts(f["date"]) - ts(i["date"])) > MERGE_WINDOW_H * 3600:
                 continue
             a, b = norm(f["text"]), norm(i["text"])
-            if a and b and difflib.SequenceMatcher(None, a, b).ratio() >= MERGE_RATIO:
+            n = min(len(a), len(b), 200)
+            if a and b and (a[:n] == b[:n] or difflib.SequenceMatcher(None, a, b).ratio() >= MERGE_RATIO):
                 best = f
                 break
         if best:
@@ -151,7 +152,17 @@ def main():
     index = load_json(INDEX, [])
     hidden = set(load_json(f"{DATA}/hidden.json", []))
     by_id = {p["id"]: p for p in index}
-    items = merge(fb_posts(), ig_posts())
+    fb, ig = fb_posts(), ig_posts()
+    items = merge(fb, ig)
+    # IG príspevky, ktoré sa teraz spojili s FB, odstránime aj zo starších behov
+    for i in ig:
+        if i.get("merged"):
+            gone = "ig-" + re.sub(r"\W", "-", i["sid"])
+            by_id.pop(gone, None)
+            try:
+                os.remove(f"{POSTS_DIR}/{gone}.json")
+            except FileNotFoundError:
+                pass
     new = updated = 0
     for it in items:
         pid = ("fb-" if it["source"] == "facebook" else "ig-") + re.sub(r"\W", "-", it["sid"])
